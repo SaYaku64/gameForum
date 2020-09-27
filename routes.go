@@ -12,6 +12,14 @@ func initializeRoutes() {
 	router.GET("/", showIndexPage)
 	router.POST("/", ensureNotLoggedIn(), performLogin)
 
+	// router.POST("/ping", func(c *gin.Context) {
+	// 	c.JSON(200, gin.H{
+	// 		"message": "POOOOST",
+	// 	})
+	// })
+
+	router.POST("/ping", ensureNotLoggedIn(), performLogin)
+
 	router.GET("/tutorial", showTutorialPage)
 
 	// Група связаных роутов вокруг пользователя
@@ -20,7 +28,7 @@ func initializeRoutes() {
 		// Handle the GET requests at /u/login
 		// Show the login page
 		// Ensure that the user is not logged in by using the middleware
-		userRoutes.GET("/login", ensureNotLoggedIn(), showLoginPage)
+		//userRoutes.GET("/login", ensureNotLoggedIn(), showLoginPage)
 
 		// Handle POST requests at /u/login
 		// Ensure that the user is not logged in by using the middleware

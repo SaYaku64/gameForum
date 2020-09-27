@@ -17,24 +17,30 @@ func showLoginPage(c *gin.Context) {
 }
 
 func performLogin(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	username := c.PostForm("usernameLogin")
+	password := c.PostForm("passwordLogin")
 
 	if checkFromDB(username, password) {
 		token := generateSessionToken()
 		c.SetCookie("token", token, 3600, "", "", false, true)
 		c.Set("is_logged_in", true)
 
-		showIndexPage(c)
+		// c.JSON(200, gin.H{
+		// 	"message": "Successful login",
+		// })
+		//showIndexPage(c)
 		// render(c, gin.H{
 		// 	"title": "Successful Login"}, "login-successful.html")
 
 	} else {
-		render(c, gin.H{
-			"title":        "Home Page",
-			"ErrorTitle":   "Login Failed",
-			"ErrorMessage": "Invalid login or password",
-		}, "index.html")
+		c.JSON(200, gin.H{
+			"message": "Login Failed: Invalid login or password",
+		})
+		// render(c, gin.H{
+		// 	"title":        "Home Page",
+		// 	"ErrorTitle":   "Login Failed",
+		// 	"ErrorMessage": "Invalid login or password",
+		// }, "index.html")
 
 		// articles := getArticleFromDB()
 		// render(c, gin.H{
