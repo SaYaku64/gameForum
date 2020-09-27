@@ -1,0 +1,16 @@
+html, body{
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: Gill Sans MT;
+	background: linear-gradient(to right,#0f1c2b 20%,#203852 50%,#0f1c2b 80%);
+}
+
+.container {
+	list-style-type: none;
+    position: relative;
+    float: left;
+    margin-right: 10px;
+    font: 25px "Gill Sans MT", sans-serif;
+    color: rgba(54, 10, 248, 0.418);
+    letter-spacing: 3px; }
