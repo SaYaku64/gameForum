@@ -19,18 +19,21 @@ func showLoginPage(c *gin.Context) {
 func performLogin(c *gin.Context) {
 	username := c.PostForm("usernameLogin")
 	password := c.PostForm("passwordLogin")
+	check := c.PostForm("checkLogin")
 
-	if checkFromDB(username, password) {
+	if username != "" && password != "" && checkFromDB(username, password) {
 		token := generateSessionToken()
-		c.SetCookie("token", token, 3600, "", "", false, true)
+		if check == "true" {
+			c.SetCookie("token", token, 86400, "", "", false, true) // token 24h
+		} else {
+			c.SetCookie("token", token, 300, "", "", false, true) // token 5m
+		}
+
 		c.Set("is_logged_in", true)
 
-		// c.JSON(200, gin.H{
-		// 	"message": "Successful login",
-		// })
-		//showIndexPage(c)
-		// render(c, gin.H{
-		// 	"title": "Successful Login"}, "login-successful.html")
+		c.JSON(200, gin.H{
+			"message": "Successful login",
+		})
 
 	} else {
 		c.JSON(200, gin.H{

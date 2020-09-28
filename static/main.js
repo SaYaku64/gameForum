@@ -1,21 +1,31 @@
 $("document").ready(() => {
 
     let btn = $("#b44");
+    let check = "false";
+    // Handle the checkbox
+    $("#checkLogin").click(function (e) {
+        if ($(this).is(':checked')) {
+            check = "true";
+        } else {
+            check = "false";
+        }
+    });
 
     btn.click(() => {
 
         var name = $("#usernameLogin").val();
         var password = $("#passwordLogin").val();
+        
         $.post("/ping", {
             usernameLogin: name,
             passwordLogin: password,
+            checkLogin: check,
         }, function(result){
-            //$("span").html(result);
-            //alert(result.message)
-            if (result.message == "Login Failed: Invalid login or password") {
-                document.getElementById("errorMenu").innerHTML = "<p class=\"bg-danger dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
+            if (result.message == "Successful login") {
+                document.getElementById("errorMenu").innerHTML = "<p class=\"bg-success dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
+                setTimeout(() => location.reload(), 1500);
             } else {
-                location.reload();
+                document.getElementById("errorMenu").innerHTML = "<p class=\"bg-danger dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
             }
         });
 
