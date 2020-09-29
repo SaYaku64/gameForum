@@ -4,32 +4,29 @@ package main
 
 func initializeRoutes() {
 
-	// Use the setUserStatus middleware for every route to set a flag
+	// Use the setUserStatus and setAdminStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
 	router.Use(setUserStatus())
+	router.Use(setAdminStatus())
 
-	// Обработка индекс-роута
+	// Handling Index-page
 	router.GET("/", showIndexPage)
 	router.POST("/", ensureNotLoggedIn(), performLogin)
 
-	// router.POST("/ping", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{
-	// 		"message": "POOOOST",
-	// 	})
-	// })
-
-	router.POST("/ping", ensureNotLoggedIn(), performLogin)
-
+	// Handling Tutorial-page
 	router.GET("/tutorial", showTutorialPage)
+	router.GET("/tutorial/:article_id", getTutorialArticle)
 
-	// Група связаных роутов вокруг пользователя
+	// Handling FAQ-page
+	router.GET("/faq", showFAQPage)
+	router.GET("/faq/:article_id", getFAQArticle)
+
+	// Handling Conversation-page
+	router.GET("/article", showConersationPage)
+
+	// Group of user routs
 	userRoutes := router.Group("/u")
 	{
-		// Handle the GET requests at /u/login
-		// Show the login page
-		// Ensure that the user is not logged in by using the middleware
-		//userRoutes.GET("/login", ensureNotLoggedIn(), showLoginPage)
-
 		// Handle POST requests at /u/login
 		// Ensure that the user is not logged in by using the middleware
 		userRoutes.POST("/login", ensureNotLoggedIn(), performLogin)
@@ -48,7 +45,7 @@ func initializeRoutes() {
 		userRoutes.POST("/register", ensureNotLoggedIn(), register)
 	}
 
-	// Група связанных роутов вокруг заголовков
+	// Group of article routs
 	articleRoutes := router.Group("/article")
 	{
 		// Handle GET requests at /article/view/some_article_id
@@ -62,6 +59,13 @@ func initializeRoutes() {
 		// Handle POST requests at /article/create
 		// Ensure that the user is logged in by using the middleware
 		articleRoutes.POST("/create", ensureLoggedIn(), createArticle)
+	}
+
+	adminRoutes := router.Group("/admin")
+	{
+		adminRoutes.GET("/panel", ensureAdminned(), showAdminPanelPage)
+
+		adminRoutes.POST("/panel", ensureAdminned(), delThisShit)
 	}
 
 }

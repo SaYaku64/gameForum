@@ -1,39 +1,65 @@
 <!--menu.html-->
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-    <!-- LOGO-NAME -->
+
+    <!-- =====================================
+      Logo link 
+     ===================================== --> 
     <a class="navbar-brand" href="/"><h3>
       <b class="text-primary">NULE</b><b class="text-success">S</b><b class="text-warning">andbox</b>
     </h3></a>
+
     <!-- Objects next to logo (discussions and signings) -->
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+      <!-- =====================================
+        Tutorial link 
+       ===================================== --> 
       <li class="navbar-header"><h3>
         <a class="navbar-brand" href="/tutorial">
           Tutorial
         </a> </h3>
       </li>
 
+      <!-- =====================================
+        FAQ link 
+       ===================================== --> 
       <li class="navbar-header"><h3>
-        <a class="navbar-brand" href="/tutorial">
+        <a class="navbar-brand" href="/faq">
           F.A.Q.
         </a> </h3>
       </li>
-      <!-- <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-      </li> -->
+
+      <!-- =====================================
+        Link to players' conversation  
+       ===================================== --> 
+      
+      <li class="navbar-header"><h3>
+        {{ if eq .is_logged_in false}}
+        <a class="navbar-brand text-muted">
+        {{end}}
+        {{ if .is_logged_in }}
+        <a class="navbar-brand" href="/article">
+        {{end}}
+          Conversation
+        </a> </h3>
+      </li>
+      <!-- {{ if .adminned }} -->
+        <!--Display this link only when the user is logged in-->
+        <!-- <li class="navbar-header"> -->
+          <!-- <a class="navbar-brand" href="/article/create">ADMIIIN</a> -->
+        <!-- </li> -->
+      <!-- {{end}} -->
 
       {{ if .is_logged_in }}
         <!--Display this link only when the user is logged in-->
-
         <li class="navbar-header">
           <a class="navbar-brand" href="/article/create">Create Article</a>
         </li>
-
       {{end}} 
+
+      
     </ul>
     <ul class="form-inline my-2 my-lg-0">
 
@@ -44,20 +70,26 @@
           Sign in
         </a>
         <div class="panel panel-default dropdown-menu" aria-labelledby="navbarDropdown">
-          <div class="panel-body ">
-              <div class="form-group dropdown-item">
+          <div class="panel-body p-4">
+              <div class="form-group">
                 <label for="usernameLogin">Username</label>
                 <input type="text" class="form-control " id="usernameLogin" name="usernameLogin" placeholder="Username">
               </div>
-              <div class="form-group dropdown-item">
+              <div class="form-group">
                 <label for="passwordLogin">Password</label>
                 <input type="password" class="form-control " id="passwordLogin" name="passwordLogin" placeholder="Password">
               </div>
-              <div class="form-check dropdown-item mr-5">
+              <!-- <div class="form-check mr-5">
                 <input class="form-check-input pl-n1" type="checkbox" id="checkLogin">
-                <label class="form-check-label pl-2" for="checkLogin"> Stay signed in </label>
+                <label class="form-check-label pl-2" for="checkLogin"> Remember me<br>longer than 10 min</label>
+              </div> -->
+              <div class="form-group my-3">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="checkLogin">
+                  <label class="form-check-label pl-2" for="checkLogin">Remember me<br>longer than 10 min</label>
+                </div>
               </div>
-              <button id="b44" class="btn btn-primary ml-4">Login</button>
+              <button id="buttonLogin" class="btn btn-primary ml-4">Login</button>
           </div>
         </div> 
       </li>

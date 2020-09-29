@@ -1,6 +1,6 @@
 $("document").ready(() => {
 
-    let btn = $("#b44");
+    let btn1 = $("#buttonLogin");
     let check = "false";
     // Handle the checkbox
     $("#checkLogin").click(function (e) {
@@ -11,12 +11,12 @@ $("document").ready(() => {
         }
     });
 
-    btn.click(() => {
+    btn1.click(() => {
 
         var name = $("#usernameLogin").val();
         var password = $("#passwordLogin").val();
         
-        $.post("/ping", {
+        $.post("/u/login", {
             usernameLogin: name,
             passwordLogin: password,
             checkLogin: check,

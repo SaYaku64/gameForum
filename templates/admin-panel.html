@@ -1,0 +1,27 @@
+<!--create-article.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<h1>Admin Panel</h1>
+<script src="/static/admin.js"></script>
+
+<div class="panel panel-default col-sm-12">
+  <div class="panel-body">
+    <div class="form-group">
+      <p><h3><b>Print database for deleting elements:</b></h3></p>
+      <label for="delElem">articles/users</label>
+      <input type="text" class="form-control" id="delElem" name="delElem" placeholder="For example: 'users'">
+    </div>
+    <p><h3><b>Print name of title/user:</b></h3></p>
+    <div class="form-group">
+      <label for="delName">Name</label>
+      <input type="text" name="delName" class="form-control" id="delName" placeholder="For example: 'dickSucker69'">
+    </div>
+    <button id="adminButton" class="btn btn-primary">Submit</button>
+  </div>
+</div>  
+
+    
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
