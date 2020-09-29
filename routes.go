@@ -22,7 +22,7 @@ func initializeRoutes() {
 	router.GET("/faq/:article_id", getFAQArticle)
 
 	// Handling Conversation-page
-	router.GET("/article", showConersationPage)
+	router.GET("/article", ensureLoggedIn(), showConersationPage)
 
 	// Group of user routs
 	userRoutes := router.Group("/u")
@@ -49,7 +49,7 @@ func initializeRoutes() {
 	articleRoutes := router.Group("/article")
 	{
 		// Handle GET requests at /article/view/some_article_id
-		articleRoutes.GET("/view/:article_id", getArticle)
+		articleRoutes.GET("/view/:article_id", ensureLoggedIn(), getArticle)
 
 		// Handle the GET requests at /article/create
 		// Show the article creation page

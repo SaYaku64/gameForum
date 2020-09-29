@@ -15,9 +15,11 @@ func ensureLoggedIn() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
-
 		if !loggedIn {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			render(c, gin.H{
+				"title": "Home Page",
+			}, "index.html")
 		}
 	}
 }
@@ -28,6 +30,9 @@ func ensureNotLoggedIn() gin.HandlerFunc {
 		loggedIn := loggedInInterface.(bool)
 		if loggedIn {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			render(c, gin.H{
+				"title": "Home Page",
+			}, "index.html")
 		}
 	}
 }

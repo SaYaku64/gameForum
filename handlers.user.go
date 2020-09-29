@@ -12,6 +12,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func setCookies(c *gin.Context, token, username string, age int) {
+	c.SetCookie("token", token, age, "", "", false, true)       // token 30d
+	c.SetCookie("username", username, age, "", "", false, true) // token 30d
+}
+
 func performLogin(c *gin.Context) {
 	username := c.PostForm("usernameLogin")
 	password := c.PostForm("passwordLogin")
@@ -19,7 +24,7 @@ func performLogin(c *gin.Context) {
 
 	if username != "" && password != "" && checkFromDB(username, password) {
 		token := generateSessionToken()
-		if username == "GrandAdmin64" {
+		if username == "GrandAdmin64" || username == "Admin" {
 			sToken := generateSessionToken()
 			c.SetCookie("token", token, 300, "", "", false, true)         // token 5m
 			c.SetCookie("specialToken", sToken, 300, "", "", false, true) // token 5m
@@ -27,11 +32,9 @@ func performLogin(c *gin.Context) {
 			c.Set("adminned", true)
 		} else {
 			if check == "true" {
-				c.SetCookie("token", token, 2592000, "", "", false, true)       // token 30d
-				c.SetCookie("username", username, 2592000, "", "", false, true) // token 30d
+				setCookies(c, token, username, 2592000) // token 30d
 			} else {
-				c.SetCookie("token", token, 600, "", "", false, true)       // token 10m
-				c.SetCookie("username", username, 600, "", "", false, true) // token 10m
+				setCookies(c, token, username, 600) // token 10m
 			}
 
 			c.Set("is_logged_in", true)
@@ -72,8 +75,7 @@ func register(c *gin.Context) {
 
 	if err := registerNewUser(username, password); err == nil {
 		token := generateSessionToken()
-		c.SetCookie("token", token, 600, "", "", false, true)
-		c.SetCookie("username", username, 600, "", "", false, true) // token 10m
+		setCookies(c, token, username, 600) // token 10m
 		c.Set("is_logged_in", true)
 
 		showIndexPage(c)

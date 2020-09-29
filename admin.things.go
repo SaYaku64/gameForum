@@ -47,7 +47,7 @@ func delThisShit(c *gin.Context) {
 		}
 		log.Println(deleteResult)
 		c.JSON(200, gin.H{
-			"message": "Successful deleting",
+			"message": "Successfully deleted",
 		})
 	}
 
@@ -63,6 +63,9 @@ func ensureAdminned() gin.HandlerFunc {
 
 		if !adminnedIn {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			render(c, gin.H{
+				"title": "Home Page",
+			}, "index.html")
 		}
 	}
 }
