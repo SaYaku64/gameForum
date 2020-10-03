@@ -38,7 +38,12 @@ func delThisShit(c *gin.Context) {
 			filter = bson.M{"title": delName}
 		}
 
-		deleteResult, err := collection.DeleteOne(context.TODO(), filter)
+		update := bson.M{
+			"$push": bson.M{"comment": comment{ComTime: "ddddd", ComContent: "22", ComName: "Name of 222"}},
+		}
+
+		deleteResult, err := collection.UpdateOne(context.TODO(), filter, update)
+		//deleteResult, err := collection.DeleteOne(context.TODO(), filter)
 		if err != nil {
 			log.Println(err)
 			c.JSON(200, gin.H{

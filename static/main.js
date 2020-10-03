@@ -1,6 +1,8 @@
 $("document").ready(() => {
 
     let btn1 = $("#buttonLogin");
+    let btn2 = $("#buttonComment");
+
     let check = "false";
     // Handle the checkbox
     $("#checkLogin").click(function (e) {
@@ -28,25 +30,32 @@ $("document").ready(() => {
                 document.getElementById("errorMenu").innerHTML = "<p class=\"bg-danger dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
             }
         });
+    });
 
-        // $.post("demo_test_post.asp",
-        // {
-        //   name: "Donald Duck",
-        //   city: "Duckburg"
-        // },
-        // function(data,status){
-        //   alert("Data: " + data + "\nStatus: " + status);
-        // });
+    btn2.click(() => {
 
-        // $.ajax({
-        //     //type: "POST",
-        //     url: "/ping",
-        //     content: "application/json",
-        //     success: (result) => {
-        //         console.log(result)
-        //         document.getElementById("errorMenu").innerHTML = "<p class=\"bg-danger dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
-                
-        //     },
-        // });
+        var comtitle = document.getElementById('comtitle').innerHTML
+        var comment = $("#comment").val();
+        
+
+
+        $('.close').trigger('click');
+
+
+
+        $.post("/article/comment", {
+            comtitle: comtitle,
+            comment: comment,
+        }, function(result){
+            if (result.message == "Successfully added") {
+                document.getElementById("errorMenu").innerHTML = "<p class=\"bg-success dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
+                // document.getElementById("commentPlace").innerHTML = result.message;
+                $( "#commentPlace" ).load(window.location.href + " #commentPlace" );
+                //setTimeout(() => location.reload(), 1500);
+            } else {
+                document.getElementById("errorMenu").innerHTML = "<p class=\"bg-danger dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
+                setTimeout(() => location.reload(), 1500);
+            }
+        });
     });
 });

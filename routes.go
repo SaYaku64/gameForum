@@ -15,11 +15,9 @@ func initializeRoutes() {
 
 	// Handling Tutorial-page
 	router.GET("/tutorial", showTutorialPage)
-	router.GET("/tutorial/:article_id", getTutorialArticle)
 
 	// Handling FAQ-page
 	router.GET("/faq", showFAQPage)
-	router.GET("/faq/:article_id", getFAQArticle)
 
 	// Handling Conversation-page
 	router.GET("/article", ensureLoggedIn(), showConersationPage)
@@ -36,12 +34,10 @@ func initializeRoutes() {
 		userRoutes.GET("/logout", ensureLoggedIn(), logout)
 
 		// Handle the GET requests at /u/register
-		// Show the registration page
-		// Ensure that the user is not logged in by using the middleware
+		// Shows the registration page
 		userRoutes.GET("/register", ensureNotLoggedIn(), showRegistrationPage)
 
 		// Handle POST requests at /u/register
-		// Ensure that the user is not logged in by using the middleware
 		userRoutes.POST("/register", ensureNotLoggedIn(), register)
 	}
 
@@ -50,6 +46,8 @@ func initializeRoutes() {
 	{
 		// Handle GET requests at /article/view/some_article_id
 		articleRoutes.GET("/view/:article_id", ensureLoggedIn(), getArticle)
+
+		articleRoutes.POST("/comment", ensureLoggedIn(), addComment)
 
 		// Handle the GET requests at /article/create
 		// Show the article creation page

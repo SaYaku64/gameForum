@@ -110,3 +110,27 @@ func registerNewUser(username, password string) error {
 
 	return nil
 }
+
+// Adds new user to DB
+func addComment(c *gin.Context) {
+	comtitle := c.PostForm("comtitle")
+	comment := c.PostForm("comment")
+
+	time := getCurrentTime()
+	name := ""
+
+	if token, err := c.Cookie("username"); err == nil || token != "" {
+		name = token
+	}
+
+	if err := commentToDB(comtitle, comment, time, name); err == nil {
+		c.JSON(200, gin.H{
+			"message": "Successfully added",
+		})
+
+	} else {
+		c.JSON(200, gin.H{
+			"message": "Failed adding comment",
+		})
+	}
+}

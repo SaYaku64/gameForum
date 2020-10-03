@@ -5,21 +5,22 @@
   <!--Loop over the `payload` variable, which is the list of articles-->
   {{range .payload }}
     <!--Create the link for the article based on its ID-->
-    
-
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-sm-8">
         <div class="card">
           <div class="card-header">
-            <a class="card-title text-dark" href="/article/view/{{.ID}}">
-              <h3>{{.Title}}</h3>
-            </a>
+            <h4 class="card-title">
+              <a class="text-dark" href="/article/view/{{.ID}}">
+                {{.Title}}
+              </a>
+              <small class="float-right text-secondary">
+                {{.Name}}
+              </small>
+            </h4>
           </div>
         </div>
       </div>
     </div>
-    
   {{end}}
-
-<!--Embed the footer.html template at this location-->
+  
 {{ template "footer.html" .}}

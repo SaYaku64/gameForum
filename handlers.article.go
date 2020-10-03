@@ -29,7 +29,7 @@ func createNewArticle(c *gin.Context, title, content string) (*article, error) {
 		name = token
 	}
 
-	a := article{ID: len(getArticleFromDB()) + 1, Title: title, Content: content, Time: time, Name: name}
+	a := article{ID: len(getArticleFromDB()) + 1, Title: title, Content: content, Time: time, Name: name, Comment: []comment{}}
 
 	insertArticleToDB(a)
 

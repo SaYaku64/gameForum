@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Shows Index page
+// Shows start page
 func showIndexPage(c *gin.Context) {
 	render(c, gin.H{
 		"title": "Home Page"}, "index.html")
@@ -14,14 +14,14 @@ func showIndexPage(c *gin.Context) {
 func showTutorialPage(c *gin.Context) {
 	render(c, gin.H{
 		"title":   "Tutorial",
-		"payload": Tutorials}, "tutorial.html")
+		"payload": Tutorials}, "cached-tut.faq.html")
 }
 
 // Shows FAQ page
 func showFAQPage(c *gin.Context) {
 	render(c, gin.H{
 		"title":   "FAQ",
-		"payload": FAQs}, "faq.html")
+		"payload": FAQs}, "cached-tut.faq.html")
 }
 
 // Shows Conversation page (user articles)

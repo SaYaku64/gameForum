@@ -45,12 +45,6 @@
           Conversation
         </a> </h3>
       </li>
-      <!-- {{ if .adminned }} -->
-        <!--Display this link only when the user is logged in-->
-        <!-- <li class="navbar-header"> -->
-          <!-- <a class="navbar-brand" href="/article/create">ADMIIIN</a> -->
-        <!-- </li> -->
-      <!-- {{end}} -->
 
       {{ if .is_logged_in }}
         <!--Display this link only when the user is logged in-->
@@ -59,6 +53,11 @@
         </li>
       {{end}} 
 
+      {{ if .adminned }}
+      <li class="navbar-header">
+        <a class="navbar-brand" href="/admin/panel">Admin Panel</a>
+      </li>
+      {{end}} 
       
     </ul>
     <ul class="form-inline my-2 my-lg-0">

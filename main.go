@@ -49,6 +49,17 @@ func render(c *gin.Context, data gin.H, templateName string) {
 		return
 	}
 
+	adminnedInterface, ok := c.Get("adminned")
+	if ok != true {
+		log.Println("Error in getting 'adminned' parameter")
+		return
+	}
+	data["adminned"], ok = adminnedInterface.(bool)
+	if ok != true {
+		log.Println("adminnedInterface isn't bool")
+		return
+	}
+
 	switch c.Request.Header.Get("Accept") {
 	case "application/json":
 		c.JSON(http.StatusOK, data["payload"])
@@ -60,19 +71,19 @@ func render(c *gin.Context, data gin.H, templateName string) {
 }
 
 func connDB() mongo.Client {
-	// Создаём клиента БД
+	// Creating DB Client
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://127.0.0.1:27017"))
 	if err != nil {
 		log.Println(err)
 	}
 
-	// Создаём соединение
+	// Connect
 	err = client.Connect(context.TODO())
 	if err != nil {
 		log.Println(err)
 	}
 
-	// Проверяем соединение
+	// Checking connection
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Println(err)
@@ -82,7 +93,7 @@ func connDB() mongo.Client {
 }
 
 func disconnDB(client mongo.Client) {
-	// Закрываем соединение с БД
+	// Disconnect
 	err := client.Disconnect(context.TODO())
 	if err != nil {
 		log.Println(err)

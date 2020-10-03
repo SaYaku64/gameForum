@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -133,4 +134,24 @@ func insertArticleToDB(a article) {
 		log.Println(err)
 	}
 	log.Println(insertResult)
+}
+
+// Adding comment to DB
+func commentToDB(comtitle, commentStr, time, name string) error {
+
+	collection := Client.Database("courses").Collection("articles")
+	filter := bson.M{"title": comtitle}
+
+	update := bson.M{
+		"$push": bson.M{"comment": comment{ComTime: time, ComContent: commentStr, ComName: name}},
+	}
+
+	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		log.Println(err)
+		return errors.New("Failed to update")
+	}
+	log.Println(updateResult)
+	return nil
 }
