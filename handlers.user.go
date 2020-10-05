@@ -4,12 +4,14 @@ package main
 
 import (
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/quickemailverification/quickemailverification-go"
 )
 
 func setCookies(c *gin.Context, token, username string, age int) {
@@ -70,41 +72,67 @@ func logout(c *gin.Context) {
 
 // Adds new user to DB
 func register(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	email := c.PostForm("email")
 
-	if err := registerNewUser(username, password); err == nil {
-		token := generateSessionToken()
-		setCookies(c, token, username, 600) // token 10m
-		c.Set("is_logged_in", true)
+	result := checkEmailValidation(email)
+	if result == "valid" {
+		username := c.PostForm("username")
+		password := c.PostForm("password")
 
-		showIndexPage(c)
-		// render(c, gin.H{
-		// 	"title": "Successful registration & Login"}, "login-successful.html")
+		if err := registerNewUser(email, username, password); err == nil {
+			token := generateSessionToken()
+			setCookies(c, token, username, 600) // token 10m
+			c.Set("is_logged_in", true)
 
+			// showIndexPage(c)
+			render(c, gin.H{
+				"title": "Home page"}, "index.html")
+		} else {
+			render(c, gin.H{
+				"title":        "Register",
+				"ErrorTitle":   "Registration Failed",
+				"ErrorMessage": err.Error(),
+			}, "register.html")
+		}
 	} else {
 		render(c, gin.H{
 			"title":        "Register",
 			"ErrorTitle":   "Registration Failed",
-			"ErrorMessage": err.Error(),
+			"ErrorMessage": "Invalid email adress",
 		}, "register.html")
 	}
+
 }
 
-func registerNewUser(username, password string) error {
+func checkEmailValidation(email string) string {
+	qev := quickemailverification.CreateClient("API_KEY")
+	// Need to use Verify instead Sandbox in production
+	response, err := qev.Verify(email) // Email address which need to be verified
+	if err != nil {
+		log.Println(err)
+		return "Validation failed"
+	}
+	return response.Result
+}
+
+func registerNewUser(email, username, password string) error {
 	if strings.TrimSpace(password) == "" {
 		return errors.New("The password field can't be empty")
+	} else if strings.TrimSpace(email) == "" {
+		return errors.New("The email adress field can't be empty")
+	} else if !checkEmailExist(email) {
+		return errors.New("The email is already used")
 	} else if strings.TrimSpace(username) == "" {
 		return errors.New("The username field can't be empty")
 	} else if !checkUserExist(username) {
-		return errors.New("The username isn't available")
+		return errors.New("The username is already used")
 	}
 
 	hPass, err := HashString(password)
 	if err != nil {
 		return err
 	}
-	u := user{Username: username, Password: hPass}
+	u := user{Email: email, Username: username, Password: hPass}
 
 	addUserToDB(u)
 

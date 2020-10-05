@@ -80,14 +80,33 @@ func checkUserExist(username string) bool {
 	filter := bson.M{"username": username}
 
 	var result user
-	var ret bool
+	//var ret bool
 
 	err := collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		log.Println(err)
-		ret = true
+		return true
 	}
-	return ret
+
+	return false
+}
+
+// Checks if user with this email - exists in DB
+func checkEmailExist(email string) bool {
+
+	collection := Client.Database("courses").Collection("users")
+
+	filter := bson.M{"email": email}
+
+	var result user
+
+	err := collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Println(err)
+		return true
+	}
+
+	return false
 }
 
 /////////////////////////////////////////////
