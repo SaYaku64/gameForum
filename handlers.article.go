@@ -3,7 +3,7 @@
 package main
 
 import (
-	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,12 +12,14 @@ func createArticle(c *gin.Context) {
 	title := c.PostForm("title")
 	content := c.PostForm("content")
 
-	if a, err := createNewArticle(c, title, content); err == nil {
-		render(c, gin.H{
-			"title":   "Submission Successful",
-			"payload": a}, "submission-successful.html")
+	if _, err := createNewArticle(c, title, content); err == nil {
+		c.JSON(200, gin.H{
+			"message": "Successful creation",
+		})
 	} else {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.JSON(200, gin.H{
+			"message": "Creation failed",
+		})
 	}
 }
 
@@ -35,4 +37,88 @@ func createNewArticle(c *gin.Context, title, content string) (*article, error) {
 
 	return &a, nil
 
+}
+
+// Removes all comments on post
+func deleteArticle(c *gin.Context) {
+	title := c.PostForm("title")
+	articleAuthor := c.PostForm("authorName")
+
+	username := ""
+	if token, err := c.Cookie("username"); err == nil || token != "" {
+		username = token
+	}
+
+	if username == articleAuthor || username == "" {
+		if err := deleteArticleFromDB(title); err == nil {
+			c.JSON(200, gin.H{
+				"message": "Successfully deleted",
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"message": err,
+			})
+		}
+	} else {
+		c.JSON(200, gin.H{
+			"message": "You are not author of the article!",
+		})
+	}
+}
+
+// Adds comment on post
+func addComment(c *gin.Context) {
+	comtitle := c.PostForm("comtitle")
+	comment := c.PostForm("comment")
+	if strings.TrimSpace(comtitle) == "" || strings.TrimSpace(comment) == "" {
+		c.JSON(200, gin.H{
+			"message": "Error: Empty field!",
+		})
+	} else {
+		time := getCurrentTime()
+		name := ""
+
+		if token, err := c.Cookie("username"); err == nil || token != "" {
+			name = token
+		}
+
+		if err := commentToDB(comtitle, comment, time, name); err == nil {
+			c.JSON(200, gin.H{
+				"message": "Successfully added",
+			})
+
+		} else {
+			c.JSON(200, gin.H{
+				"message": "Failed adding comment",
+			})
+		}
+	}
+}
+
+// Removes all comments on post
+func removeComment(c *gin.Context) {
+	title := c.PostForm("title")
+	articleAuthor := c.PostForm("authorName")
+
+	username := ""
+	if token, err := c.Cookie("username"); err == nil || token != "" {
+		username = token
+	}
+
+	if username == articleAuthor || username == "" {
+		if err := delComment(title); err == nil {
+			c.JSON(200, gin.H{
+				"message": "Successfully removed",
+			})
+
+		} else {
+			c.JSON(200, gin.H{
+				"message": err,
+			})
+		}
+	} else {
+		c.JSON(200, gin.H{
+			"message": "You are not author of the article!",
+		})
+	}
 }

@@ -3,9 +3,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
 
-    <!-- =====================================
-      Logo link 
-     ===================================== --> 
+      <!-- ================= -->
+      <!-- Logo link -->
+      <!-- ================= -->
     <a class="navbar-brand" href="/"><h3>
       <b class="text-primary">NULE</b><b class="text-success">S</b><b class="text-warning">andbox</b>
     </h3></a>
@@ -13,28 +13,27 @@
     <!-- Objects next to logo (discussions and signings) -->
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-      <!-- =====================================
-        Tutorial link 
-       ===================================== --> 
+      <!-- ================= -->
+      <!-- Tutorial link -->
+      <!-- ================= -->
       <li class="navbar-header"><h3>
         <a class="navbar-brand" href="/tutorial">
           Tutorial
         </a> </h3>
       </li>
 
-      <!-- =====================================
-        FAQ link 
-       ===================================== --> 
+      <!-- ================= -->
+      <!-- FAQ link -->
+      <!-- ================= -->
       <li class="navbar-header"><h3>
         <a class="navbar-brand" href="/faq">
           F.A.Q.
         </a> </h3>
       </li>
 
-      <!-- =====================================
-        Link to players' conversation  
-       ===================================== --> 
-      
+      <!-- ================= -->
+      <!-- Link to players' conversation -->
+      <!-- ================= -->
       <li class="navbar-header"><h3>
         {{ if eq .is_logged_in false}}
         <a class="navbar-brand text-muted">
@@ -46,6 +45,9 @@
         </a> </h3>
       </li>
 
+      <!-- ================= -->
+      <!-- Creating the article -->
+      <!-- ================= -->
       {{ if .is_logged_in }}
         <!--Display this link only when the user is logged in-->
         <li class="navbar-header">
@@ -53,6 +55,9 @@
         </li>
       {{end}} 
 
+      <!-- ================= -->
+      <!-- Admin panel -->
+      <!-- ================= -->
       {{ if .adminned }}
       <li class="navbar-header">
         <a class="navbar-brand" href="/admin/panel">Admin Panel</a>
@@ -62,6 +67,9 @@
     </ul>
     <ul class="form-inline my-2 my-lg-0">
 
+    <!-- ================= -->
+    <!-- Signing in -->
+    <!-- ================= -->
     {{ if eq .is_logged_in false}}
       <!--Display this link only when the user is not logged in-->
       <li class="nav-item dropdown form-control mr-sm-2">
@@ -95,9 +103,11 @@
 
     {{end}}
 
-
+      <!-- ================= -->
+      <!-- Signing up -->
+      <!-- ================= -->
+    
     <!-- User not logged in -->
-    <!-- Showing Sign up "button" -->
     {{ if not .is_logged_in }}
     <li class="form-control mr-sm-2 font-weight-bold btn btn-light" data-toggle="modal" data-target="#staticBackdrop">
       <a href="#">Sign up</a>
@@ -135,11 +145,12 @@
         </div>
       </div>
     </div>
-
     {{end}} 
-    {{ if .is_logged_in }}
-      <!--Display this link only when the user is logged in-->
 
+      <!-- ================= -->
+      <!-- Logout -->
+      <!-- ================= -->
+    {{ if .is_logged_in }}
       <li class="form-control mr-sm-2 font-weight-bold">
         <a href="/u/logout">Logout</a>
       </li>

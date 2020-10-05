@@ -25,7 +25,7 @@ func showFAQPage(c *gin.Context) {
 }
 
 // Shows Conversation page (user articles)
-func showConersationPage(c *gin.Context) {
+func showConversationPage(c *gin.Context) {
 	articles := getArticleFromDB()
 
 	// Call the render function with the name of the template to render

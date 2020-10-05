@@ -13,7 +13,7 @@ $("document").ready(() => {
         }, function(result){
             if (result.message == "Successfully deleted") {
                 document.getElementById("errorMenu").innerHTML = "<p class=\"bg-success dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
-                setTimeout(() => location.reload(), 1500);
+                setTimeout(() => $( "#errorMenu" ).load(window.location.href + " #errorMenu" ), 2500);
             } else {
                 document.getElementById("errorMenu").innerHTML = "<p class=\"bg-danger dropdown-item text-white font-weight-bold\">"+result.message+"</p>";
             }

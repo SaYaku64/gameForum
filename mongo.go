@@ -5,6 +5,8 @@ import (
 	"errors"
 	"log"
 
+	//"github.com/gin-gonic/gin"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,6 +31,7 @@ func CheckPasswordHash(password, hash string) bool {
 // User manipulations
 /////////////////////////////////////////////
 
+// Checks if entered username and password are the same in DB
 func checkFromDB(username string, password string) bool {
 
 	// Getting the collection (table)
@@ -56,6 +59,7 @@ func checkFromDB(username string, password string) bool {
 
 }
 
+// Adds new user to DB
 func addUserToDB(user user) {
 
 	collection := Client.Database("courses").Collection("users")
@@ -68,6 +72,7 @@ func addUserToDB(user user) {
 	log.Println(insertResult)
 }
 
+// Checks if user with this name - exists in DB
 func checkUserExist(username string) bool {
 
 	collection := Client.Database("courses").Collection("users")
@@ -89,6 +94,7 @@ func checkUserExist(username string) bool {
 // Article manipulations
 /////////////////////////////////////////////
 
+// Gets articles from DB and return slice of them
 func getArticleFromDB() []article {
 
 	collection := Client.Database("courses").Collection("articles")
@@ -125,6 +131,7 @@ func getArticleFromDB() []article {
 	return results
 }
 
+// Adds article to DB
 func insertArticleToDB(a article) {
 
 	collection := Client.Database("courses").Collection("articles")
@@ -136,7 +143,46 @@ func insertArticleToDB(a article) {
 	log.Println(insertResult)
 }
 
-// Adding comment to DB
+// Deletes article from DB
+func deleteArticleFromDB(title string) error {
+
+	collection := Client.Database("courses").Collection("articles")
+	filter := bson.M{"title": title}
+
+	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Failed to delete")
+	}
+	log.Println(deleteResult)
+	return nil
+}
+
+/////////////////////////////////////////////
+// Comment manipulations
+/////////////////////////////////////////////
+
+// // Gets comments from DB and return slice of them
+// func getCommentFromDB(title string) []comment {
+
+// 	collection := Client.Database("courses").Collection("articles")
+
+// 	filter := bson.M{"title": title}
+// 	var result article
+
+// 	err := collection.FindOne(context.TODO(), filter).Decode(&result)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	var comments []comment
+// 	for _, comm := range result.Comment {
+// 		comments = append(comments, comm)
+// 	}
+// 	return comments
+
+// }
+
+// Adds comment to DB
 func commentToDB(comtitle, commentStr, time, name string) error {
 
 	collection := Client.Database("courses").Collection("articles")
@@ -153,5 +199,25 @@ func commentToDB(comtitle, commentStr, time, name string) error {
 		return errors.New("Failed to update")
 	}
 	log.Println(updateResult)
+	return nil
+}
+
+// Deletes all coments in article
+func delComment(comtitle string) error {
+
+	collection := *Client.Database("courses").Collection("articles")
+	filter := bson.M{"title": comtitle}
+
+	update := bson.M{
+		"$set": bson.M{"comment": []comment{}},
+	}
+
+	deleteResult, err := collection.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		log.Println(err)
+		return errors.New("Failed to delete")
+	}
+	log.Println(deleteResult)
 	return nil
 }
