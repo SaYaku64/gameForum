@@ -3,6 +3,7 @@
 package main
 
 import (
+	"log"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -26,11 +27,12 @@ func createArticle(c *gin.Context) {
 // Creating article
 func createNewArticle(c *gin.Context, title, content string) (*article, error) {
 	time := getCurrentTime()
-	name := ""
-	if token, err := c.Cookie("username"); err == nil || token != "" {
-		name = token
-	}
 
+	u, err := getCurrentUser(c)
+	if err != nil {
+		return nil, err
+	}
+	name := u.Username
 	a := article{ID: len(getArticleFromDB()) + 1, Title: title, Content: content, Time: time, Name: name, Comment: []comment{}}
 
 	insertArticleToDB(a)
@@ -44,26 +46,34 @@ func deleteArticle(c *gin.Context) {
 	title := c.PostForm("title")
 	articleAuthor := c.PostForm("authorName")
 
-	username := ""
-	if token, err := c.Cookie("username"); err == nil || token != "" {
-		username = token
-	}
+	u, err := getCurrentUser(c)
+	if err != nil {
+		log.Println(err)
 
-	if username == articleAuthor || username == "" {
-		if err := deleteArticleFromDB(title); err == nil {
-			c.JSON(200, gin.H{
-				"message": "Successfully deleted",
-			})
+		c.JSON(200, gin.H{
+			"message": err,
+		})
+
+	} else {
+		username := u.Username
+
+		if username == articleAuthor || username == "" {
+			if err := deleteArticleFromDB(title); err == nil {
+				c.JSON(200, gin.H{
+					"message": "Successfully deleted",
+				})
+			} else {
+				c.JSON(200, gin.H{
+					"message": err,
+				})
+			}
 		} else {
 			c.JSON(200, gin.H{
-				"message": err,
+				"message": "You are not author of the article!",
 			})
 		}
-	} else {
-		c.JSON(200, gin.H{
-			"message": "You are not author of the article!",
-		})
 	}
+
 }
 
 // Adds comment on post
@@ -76,11 +86,15 @@ func addComment(c *gin.Context) {
 		})
 	} else {
 		time := getCurrentTime()
-		name := ""
 
-		if token, err := c.Cookie("username"); err == nil || token != "" {
-			name = token
+		u, err := getCurrentUser(c)
+		if err != nil {
+			c.JSON(200, gin.H{
+				"message": err,
+			})
 		}
+
+		name := u.Username
 
 		if err := commentToDB(comtitle, comment, time, name); err == nil {
 			c.JSON(200, gin.H{
@@ -100,10 +114,14 @@ func removeComment(c *gin.Context) {
 	title := c.PostForm("title")
 	articleAuthor := c.PostForm("authorName")
 
-	username := ""
-	if token, err := c.Cookie("username"); err == nil || token != "" {
-		username = token
+	u, err := getCurrentUser(c)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"message": err,
+		})
 	}
+
+	username := u.Username
 
 	if username == articleAuthor || username == "" {
 		if err := delComment(title); err == nil {

@@ -31,8 +31,48 @@ func CheckPasswordHash(password, hash string) bool {
 // User manipulations
 /////////////////////////////////////////////
 
+// Deletes user's token
+func delToken(username string) error {
+
+	collection := *Client.Database("courses").Collection("users")
+	filter := bson.M{"username": username}
+
+	update := bson.M{
+		"$set": bson.M{"token": token{}},
+	}
+
+	deleteResult, err := collection.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		log.Println(err)
+		return errors.New("Failed to delete")
+	}
+	log.Println(deleteResult)
+	return nil
+}
+
+// Adds token to user
+func addToken(username, tokenStr string, endless bool) error {
+
+	collection := *Client.Database("courses").Collection("users")
+	filter := bson.M{"username": username}
+
+	update := bson.M{
+		"$set": bson.M{"token": token{Name: tokenStr, Endless: endless}},
+	}
+
+	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
+
+	if err != nil {
+		log.Println(err)
+		return errors.New("Failed to delete")
+	}
+	log.Println(updateResult)
+	return nil
+}
+
 // Checks if entered username and password are the same in DB
-func checkFromDB(username string, password string) bool {
+func checkFromDB(username string, password string) (bool, user) {
 
 	// Getting the collection (table)
 	collection := Client.Database("courses").Collection("users")
@@ -46,21 +86,21 @@ func checkFromDB(username string, password string) bool {
 	err := collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		log.Println(err)
-		return false
+		return false, user{}
 	}
 
 	// Checking if entered password is the same with hashed
 	if CheckPasswordHash(password, result.Password) {
-		return true
+		return true, result
 	}
 
 	log.Println("Wrong password")
-	return false
+	return false, user{}
 
 }
 
 // Adds new user to DB
-func addUserToDB(user user) {
+func addUserToDB(user user) error {
 
 	collection := Client.Database("courses").Collection("users")
 
@@ -68,8 +108,10 @@ func addUserToDB(user user) {
 	insertResult, err := collection.InsertOne(context.TODO(), user)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 	log.Println(insertResult)
+	return nil
 }
 
 // Checks if user with this name - exists in DB

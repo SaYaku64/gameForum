@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,6 +13,22 @@ import (
 func getCurrentTime() string {
 	now := time.Now()
 	return now.Format("02 Jan 06 15:04")
+}
+
+func getCurrentUser(c *gin.Context) (user, error) {
+	token, err := c.Cookie("token")
+	if err != nil {
+		log.Println(err)
+		return user{}, errors.New("Absent token")
+	}
+	ActiveUsers.RLock()
+	if u, ok := ActiveUsers.m[token]; ok { // take user from cache
+		ActiveUsers.RUnlock()
+		return u, nil
+	}
+	ActiveUsers.RUnlock()
+
+	return user{}, errors.New("Non-active user")
 }
 
 // Gets and shows specific user article
